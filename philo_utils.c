@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 12:39:22 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/04/18 18:32:56 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/04/26 17:50:36 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ long long	current_time(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void	ft_bzero(void *s, size_t n)
+static void	ft_bzero(void *s, size_t n)
 {
 	char	*ptr;
 	size_t	i;
@@ -64,23 +64,4 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		return (NULL);
 	ft_bzero(ptr, nmemb * size);
 	return (ptr);
-}
-
-void	clean_everything(t_data *data)
-{
-	int i;
-
-	i = 0;
-	while (i != data->philos_count)
-	{
-		pthread_mutex_destroy(&data->philos[i].left_fork);
-		pthread_mutex_destroy(&data->philos[i].meal_lock);
-		free(&data->philos[i]);
-		i++;
-	}
-	i = 0;
-	free(data->philos);
-	pthread_mutex_destroy(&data->dead_lock);
-	pthread_mutex_destroy(&data->print_lock);
-	free(data);
 }

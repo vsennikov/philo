@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 14:03:45 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/04/18 17:44:57 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/04/22 17:32:09 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,5 @@ int	init_data_str(t_data *data, int argc, char **argv)
 		return (pthread_mutex_destroy(&data->dead_lock),
 			pthread_mutex_destroy(&data->print_lock), ft_putstr_fd(ALLOC_PHILOS,
 				2), 0);
-	return (1);
+	return (data->n_of_finished = 0, 1);
 }
