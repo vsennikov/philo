@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:21:01 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 14:54:04 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:55:44 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	init_philos(t_data *data)
 	while (i != data->philos_count)
 	{
 		data->philos[i].id = i;
-		data->philos[i].last_eaten = current_time();
+		data->philos[i].last_eaten = 0;
 		data->philos[i].meals_eaten = 0;
 		data->philos[i].status = START;
 		data->philos[i].is_dead = 0;
@@ -90,7 +90,7 @@ int	init_threads(t_data *data)
 	int	i;
 
 	i = 0;
-	data->start_time = current_time();
+	pthread_mutex_lock(&data->instance_lock);
 	while (i < data->philos_count)
 	{
 		if (pthread_create(&data->philos[i].thread, NULL, philo_loop,
@@ -98,6 +98,8 @@ int	init_threads(t_data *data)
 			return (clean_init(data, i), 1);
 		i++;
 	}
+	data->start_time = current_time();
+	pthread_mutex_unlock(&data->instance_lock);
 	if (pthread_create(&data->monitor, NULL, monitor_loop, data))
 		return (clean_init(data, i + 1), 1);
 	return (0);

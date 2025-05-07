@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 12:14:43 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 12:52:58 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:55:36 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	set_meal_num(int *numb_of_meals, t_philo *philo)
 
 int	check_before_eating(t_philo *philo)
 {
-	if (current_time() - philo->time_to_die == philo->last_eaten)
+	if (philo->last_eaten && current_time() - philo->time_to_die == philo->last_eaten)
 	{
 		pthread_mutex_lock(&philo->dead_lock);
 		philo->is_dead = 1;

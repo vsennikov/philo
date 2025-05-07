@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:57:44 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 12:07:19 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:55:31 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,17 @@ int	philo_died(t_philo *philo)
 	if (check_finished(philo))
 		return (pthread_mutex_unlock(&philo->dead_lock),
 			pthread_mutex_unlock(&philo->instance_lock), 1);
-	if (current_time() - philo->last_eaten >= philo->time_to_die)
+	if (philo->last_eaten && current_time() - philo->last_eaten >= philo->time_to_die)
 	{
 		pthread_mutex_unlock(&philo->instance_lock);
 		pthread_mutex_lock(&philo->data->print_lock);
 		pthread_mutex_lock(&philo->data->finished_lock);
+		pthread_mutex_lock(&philo->data->instance_lock);
 		philo->is_dead = 1;
 		printf("%lld %d %s\n", current_time() - philo->data->start_time,
 			philo->id + 1, "died");
 		philo->data->finished = 1;
+		pthread_mutex_unlock(&philo->data->instance_lock);
 		pthread_mutex_unlock(&philo->data->finished_lock);
 		pthread_mutex_unlock(&philo->dead_lock);
 		pthread_mutex_unlock(&philo->data->print_lock);
@@ -60,7 +62,9 @@ int	print_state(t_data *data, int philo_id, char *action)
 		return (0);
 	}
 	pthread_mutex_unlock(&data->finished_lock);
+	pthread_mutex_lock(&data->instance_lock);
 	printf("%lld %d %s\n", current_time() - data->start_time, philo_id, action);
+	pthread_mutex_unlock(&data->instance_lock);
 	pthread_mutex_unlock(&data->print_lock);
 	return (1);
 }

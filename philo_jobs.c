@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:18:12 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 13:09:18 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:58:02 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,14 @@ static int	p_eat(t_philo *philo);
 static int	p_sleep(t_philo *philo);
 static int	p_think(t_philo *philo);
 
+//sometimes (like 1/22) i have problem with 199 600 200 200. Philo 199 should die at 600, but he eats and everything is good. 
+//during check it looks like now 599, but its actually 600 according to timestamp before and after. 
+//what could give me wrong result????
+//i change behavior of last_eaten and start_time
+// now start time lcoking after finishing initialization
+// and last_eaten by defolt is 0 and never cheked before first eating
+//Should rewrite it because they can be dead
+//I should put it somewhere in philo_loop before actual lool, not assigne to 0 and thats all
 void	*philo_loop(void *arg)
 {
 	t_philo	*philo;
@@ -58,6 +66,9 @@ static int	p_eat(t_philo *philo)
 	if (philo_died(philo))
 		return (leave_forks(philo), 0);
 	pthread_mutex_lock(&philo->instance_lock);
+	printf("cur_time = %lld\n", current_time());
+	printf("last eaten = %lld\n", philo->last_eaten);
+	printf("the diff = %lld\n", current_time() - philo->last_eaten);
 	philo->last_eaten = current_time();
 	pthread_mutex_unlock(&philo->instance_lock);
 	print_state(philo->data, philo->id + 1, "is eating");
