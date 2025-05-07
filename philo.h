@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 19:00:52 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/04/26 18:42:52 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/07 14:45:11 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,17 @@ typedef struct s_philo
 	int					id;
 	long long			last_eaten;
 	int					meals_eaten;
+	pthread_mutex_t		meal_lock;
 	int					status;
 	int					is_dead;
+	pthread_mutex_t		dead_lock;
+	int					philos_count;
+	long long			time_to_die;
+	long long			time_to_eat;
+	long long			time_to_sleep;
+	int					numb_of_meals;
+	pthread_mutex_t		instance_lock;
 	pthread_mutex_t		left_fork;
-	pthread_mutex_t		meal_lock;
 	pthread_t			thread;
 	t_data				*data;
 }						t_philo;
@@ -46,30 +53,49 @@ typedef struct s_data
 	int					numb_of_meals;
 	int					philo_dead;
 	int					n_of_finished;
+	int					id_to_delay;
 	long long			start_time;
-	pthread_mutex_t		dead_lock;
+	pthread_mutex_t		instance_lock;
 	pthread_mutex_t		print_lock;
+	int					finished;
+	pthread_mutex_t		finished_lock;
 	t_philo				*philos;
 	pthread_t			monitor;
 }						t_data;
 
 // utils
 int						atoi_wrap(char *str);
-int						ft_strlen(char *str);
+int						free_and_print(int flag, t_data *data);
 void					ft_putstr_fd(char *s, int fd);
-long long				current_time(void);
-void					clean_everything(t_data *data);
 void					*ft_calloc(size_t nmemb, size_t size);
+long long				current_time(void);
+void					custom_usleep(long long sleep);
+void					clean_everything(t_data *data);
+void					clean_init(t_data *data, int t_created);
+
+// monitors
+void					*philo_loop(void *arg);
+void					*monitor_loop(void *arg);
+
+// philos utils
+int						take_forks(t_philo *philo);
+void					leave_forks(t_philo *philo);
+int						update_meals_eaten(t_philo *philo);
+int						check_during_eat(t_philo *philo);
 int						philo_died(t_philo *philo);
-void					print_state(t_data *data, int philo_id, char *action);
-void					update_meals_eaten(t_philo *philo);
-void					check_during_eat(t_philo *philo);
+int						print_state(t_data *data, int philo_id, char *action);
+int						check_finished(t_philo *philo);
+int						single_case(t_philo *philo, int id);
+int						even_case(t_philo *philo, int id);
+int						odd_case(t_philo *philo, int id);
 void					take_right_fork(t_philo *philo);
 void					leave_right_fork(t_philo *philo);
-// philos funcs
-void					*philo_loop(void *arg);
+void					set_meal_num(int *numb_of_meals, t_philo *philo);
+void					update_id_delay(t_philo *philo);
+int						check_before_eating(t_philo *philo);
 
 // inits
-int						init_data_str(t_data *data, int argc, char **argv);
-
+int						init_data(t_data *data, int argc, char **argv);
+int						init_philos(t_data *data);
+int						init_threads(t_data *data);
 #endif

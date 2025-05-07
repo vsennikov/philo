@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*   philo_utils_1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 12:39:22 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/04/26 17:50:36 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/02 12:27:19 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_strlen(char *str)
+static int	ft_strlen(char *str)
 {
 	int	i;
 
@@ -57,8 +57,6 @@ void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
 
-	if (size != 0 && nmemb > 65535 / size)
-		return (0);
 	ptr = malloc(nmemb * size);
 	if (!ptr)
 		return (NULL);

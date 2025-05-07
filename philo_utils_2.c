@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/26 17:47:21 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/04/26 18:49:32 by vsenniko         ###   ########.fr       */
+/*   Created: 2025/05/01 12:49:42 by vsenniko          #+#    #+#             */
+/*   Updated: 2025/05/07 12:00:18 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,47 +21,81 @@ void	clean_everything(t_data *data)
 	{
 		pthread_mutex_destroy(&data->philos[i].left_fork);
 		pthread_mutex_destroy(&data->philos[i].meal_lock);
+		pthread_mutex_destroy(&data->philos[i].dead_lock);
+		pthread_mutex_destroy(&data->philos[i].instance_lock);
 		i++;
 	}
 	i = 0;
 	free(data->philos);
-	pthread_mutex_destroy(&data->dead_lock);
 	pthread_mutex_destroy(&data->print_lock);
+	pthread_mutex_destroy(&data->finished_lock);
+	pthread_mutex_destroy(&data->instance_lock);
 	free(data);
 }
 
-int	philo_died(t_philo *philo)
+void	custom_usleep(long long sleep)
 {
-	if (current_time() - philo->last_eaten >= philo->data->time_to_die)
-		return (pthread_mutex_lock(&philo->data->dead_lock), philo->is_dead = 1,
-			pthread_mutex_unlock(&philo->data->dead_lock), 1);
-	pthread_mutex_lock(&philo->data->dead_lock);
-	if (philo->data->philo_dead)
-		return (pthread_mutex_unlock(&philo->data->dead_lock), 1);
-	pthread_mutex_unlock(&philo->data->dead_lock);
+	long long	start_time;
+
+	start_time = current_time();
+	while ((current_time() - start_time) * 1000 < sleep)
+		usleep(500);
+}
+
+static int	ft_isspace(char ch)
+{
+	if ((ch >= '\t' && ch <= '\r') || ch == ' ')
+		return (1);
 	return (0);
 }
 
-void	print_state(t_data *data, int philo_id, char *action)
+static long	ft_atoi(const char *str)
 {
-	pthread_mutex_lock(&data->print_lock);
-	printf("%lld %d %s\n", current_time() - data->start_time, philo_id, action);
-	pthread_mutex_unlock(&data->print_lock);
+	int		i;
+	int		minus;
+	long	result;
+
+	i = 0;
+	minus = 0;
+	result = 0;
+	while (ft_isspace(str[i]))
+		i++;
+	if (str[i] == '-')
+	{
+		minus = 1;
+		i++;
+	}
+	else if (str[i] == '+')
+		i++;
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = result * 10 + str[i] - '0';
+		i++;
+	}
+	if (minus)
+		result *= -1;
+	return (result);
 }
 
-void	update_meals_eaten(t_philo *philo)
+int	atoi_wrap(char *str)
 {
-	pthread_mutex_lock(&philo->meal_lock);
-	philo->meals_eaten++;
-	pthread_mutex_unlock(&philo->meal_lock);
-}
+	int	i;
 
-void	check_during_eat(t_philo *philo)
-{
-	if (current_time() + philo->data->time_to_eat >= philo->last_eaten
-		+ philo->data->time_to_die)
-		usleep((philo->data->time_to_die - (current_time()
-					- philo->data->start_time)) * 1000);
-	else
-		usleep(philo->data->time_to_eat * 1000);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (-1);
+		i++;
+	}
+	if (i > 10)
+		return (-1);
+	else if (i == 10)
+	{
+		if (ft_atoi(str) > 2147483647 || ft_atoi(str) < 1)
+			return (-1);
+	}
+	if (ft_atoi(str) < 1)
+		return (-1);
+	return (ft_atoi(str));
 }
