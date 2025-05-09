@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:18:12 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/09 12:03:05 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/09 17:50:53 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,9 @@ static int	p_eat(t_philo *philo);
 static int	p_sleep(t_philo *philo);
 static int	p_think(t_philo *philo);
 
-// sometimes (like 1/22) i have problem with 199 600 200 200. 
-//Philo 199 should die at 600,
-//	but he eats and everything is good.
-// during check it looks like now 599,
-//	but its actually 600 according to timestamp before and after.
-// what could give me wrong result????
-// i change behavior of last_eaten and start_time
-// now start time lcoking after finishing initialization
-// and last_eaten by defolt is 0 and never cheked before first eating
-// Should rewrite it because they can be dead
-// I should put it somewhere in philo_loop before actual lool,
-//	not assigne to 0 and thats all
+//        5 610 200 100 10
+// have problem with sleeping 100,
+	probably broken logic for thinking in this case
 void	*philo_loop(void *arg)
 {
 	t_philo	*philo;
@@ -38,6 +29,8 @@ void	*philo_loop(void *arg)
 	if (!philo->id && philo->philos_count != 1 && philo->philos_count != 3
 		&& philo->philos_count % 2 != 0)
 		custom_usleep(philo->time_to_eat * 1000);
+	if ((philo->id + 1) % 2 == 0)
+		custom_usleep(philo->time_to_eat / 2 * 1000);
 	while (1)
 	{
 		if (check_finished(philo))
@@ -109,11 +102,15 @@ static int	p_think(t_philo *philo)
 	if (philo->id == id && philo->philos_count % 2 != 0)
 	{
 		if (philo->time_to_eat > philo->time_to_sleep)
-			delay = philo->time_to_eat - philo->time_to_sleep;
+			delay = (philo->time_to_eat - philo->time_to_sleep) * 1000;
 		custom_usleep(delay + 20000);
 	}
 	else
-		custom_usleep(1000);
+	{
+		if (philo->time_to_eat > philo->time_to_sleep)
+			delay = (philo->time_to_eat - philo->time_to_sleep) * 1000;
+		custom_usleep(delay + 1000);
+	}
 	return (1);
 }
 
