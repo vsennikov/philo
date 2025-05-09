@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:57:44 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/08 14:34:11 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/09 12:04:53 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ int	philo_died(t_philo *philo)
 	if (check_finished(philo))
 		return (pthread_mutex_unlock(&philo->dead_lock),
 			pthread_mutex_unlock(&philo->instance_lock), 1);
-	if (philo->last_eaten && current_time() - philo->last_eaten >= philo->time_to_die)
+	if (philo->last_eaten && current_time()
+		- philo->last_eaten >= philo->time_to_die)
 	{
 		pthread_mutex_unlock(&philo->instance_lock);
 		pthread_mutex_lock(&philo->data->print_lock);
@@ -79,4 +80,13 @@ void	update_id_delay(t_philo *philo)
 		philo->data->id_to_delay += 1;
 	else if (philo->data->id_to_delay == philo->id)
 		philo->data->id_to_delay += 2;
+}
+
+void	set_start_time(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->instance_lock);
+	pthread_mutex_lock(&philo->data->instance_lock);
+	philo->last_eaten = philo->data->start_time;
+	pthread_mutex_unlock(&philo->data->instance_lock);
+	pthread_mutex_unlock(&philo->instance_lock);
 }

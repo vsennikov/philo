@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:18:12 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/08 14:35:55 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/09 12:03:05 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,7 @@ void	*philo_loop(void *arg)
 	t_philo	*philo;
 
 	philo = arg;
-	pthread_mutex_lock(&philo->instance_lock);
-	pthread_mutex_lock(&philo->data->instance_lock);
-	philo->last_eaten = philo->data->start_time;
-	pthread_mutex_unlock(&philo->data->instance_lock);
-	pthread_mutex_unlock(&philo->instance_lock);
+	set_start_time(philo);
 	if (!philo->id && philo->philos_count != 1 && philo->philos_count != 3
 		&& philo->philos_count % 2 != 0)
 		custom_usleep(philo->time_to_eat * 1000);
@@ -62,24 +58,17 @@ void	*philo_loop(void *arg)
 
 static int	p_eat(t_philo *philo)
 {
-	static int	numb_of_meals = 0;
-
 	if (check_finished(philo))
 		return (0);
-	if (!numb_of_meals)
-		set_meal_num(&numb_of_meals, philo);
 	if (!take_forks(philo))
 		return (0);
 	if (check_finished(philo))
 		return (leave_forks(philo), 0);
 	if (philo_died(philo))
 		return (leave_forks(philo), 0);
-	// pthread_mutex_lock(&philo->instance_lock);
-	// printf("cur_time = %lld\n", current_time());
-	// printf("last eaten = %lld\n", philo->last_eaten);
-	// printf("the diff = %lld\n", current_time() - philo->last_eaten);
+	pthread_mutex_lock(&philo->instance_lock);
 	philo->last_eaten = current_time();
-	// pthread_mutex_unlock(&philo->instance_lock);
+	pthread_mutex_unlock(&philo->instance_lock);
 	print_state(philo->data, philo->id + 1, "is eating");
 	if (!check_during_eat(philo))
 		return (0);

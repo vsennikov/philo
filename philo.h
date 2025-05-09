@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 19:00:52 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 14:45:11 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/09 12:02:53 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void					leave_right_fork(t_philo *philo);
 void					set_meal_num(int *numb_of_meals, t_philo *philo);
 void					update_id_delay(t_philo *philo);
 int						check_before_eating(t_philo *philo);
+void					set_start_time(t_philo *philo);
 
 // inits
 int						init_data(t_data *data, int argc, char **argv);
