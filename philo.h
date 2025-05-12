@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 19:00:52 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 12:27:21 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/12 17:22:21 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ int						print_dead(t_philo *philo);
 void					calculate_and_think(t_philo *philo, int id);
 
 // inits
-int						init_data(t_data *data, int argc, char **argv);
 int						init_philos(t_data *data);
 int						init_threads(t_data *data);
 #endif

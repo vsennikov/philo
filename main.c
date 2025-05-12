@@ -6,11 +6,38 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 19:00:49 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 17:19:47 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/12 17:22:08 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static int	init_data(t_data *data, int argc, char **argv)
+{
+	data->philos_count = atoi_wrap(argv[1]);
+	data->time_to_die = atoi_wrap(argv[2]);
+	data->time_to_eat = atoi_wrap(argv[3]);
+	data->time_to_sleep = atoi_wrap(argv[4]);
+	data->numb_of_meals = -2;
+	if (argc == 6)
+		data->numb_of_meals = atoi_wrap(argv[5]);
+	if (data->philos_count == -1 || data->time_to_die == -1
+		|| data->time_to_eat == -1 || data->time_to_sleep == -1
+		|| data->numb_of_meals == -1)
+		return (free_and_print(NOT_VALID_ERR, data));
+	data->philo_dead = 0;
+	data->philos = ft_calloc(data->philos_count, sizeof(t_philo));
+	if (!data->philos)
+		return (free_and_print(CALLOC_ERR, data));
+	if (pthread_mutex_init(&data->print_lock, NULL))
+		return (free_and_print(PRINT_MUT_ERR, data));
+	if (pthread_mutex_init(&data->finished_lock, NULL))
+		return (free_and_print(FINISH_MUT_ERR, data));
+	if (pthread_mutex_init(&data->instance_lock, NULL))
+		return (free_and_print(FINISH_MUT_ERR, data));
+	data->id_to_delay = 2;
+	return (data->n_of_finished = 0, data->finished = 0, 1);
+}
 
 static int	init_everything(t_data *data, int argc, char **argv)
 {
