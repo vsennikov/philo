@@ -6,13 +6,14 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:21:01 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 15:55:44 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/12 17:15:33 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	clean_for_init_philos(t_data *data, int init_one, int flag);
+static int	clean_for_init_philos(t_data *data, int init_one, int flag,
+				int flag_for_clean);
 
 int	init_data(t_data *data, int argc, char **argv)
 {
@@ -44,19 +45,13 @@ int	init_data(t_data *data, int argc, char **argv)
 int	init_philo_mutexs(t_data *data, int i)
 {
 	if (pthread_mutex_init(&data->philos[i].left_fork, NULL))
-		return (clean_for_init_philos(data, i + 1, L_FORK_ERR));
+		return (clean_for_init_philos(data, i, L_FORK_ERR, -1));
 	if (pthread_mutex_init(&data->philos[i].meal_lock, NULL))
-		return (pthread_mutex_destroy(&data->philos[i].left_fork),
-			clean_for_init_philos(data, i + 1, MEAL_ERR));
+		return (clean_for_init_philos(data, i, MEAL_ERR, 0));
 	if (pthread_mutex_init(&data->philos[i].dead_lock, NULL))
-		return (pthread_mutex_destroy(&data->philos[i].left_fork),
-			pthread_mutex_destroy(&data->philos[i].meal_lock),
-			clean_for_init_philos(data, i + 1, DEAD_MUT_ERR));
+		return (clean_for_init_philos(data, i, DEAD_MUT_ERR, 1));
 	if (pthread_mutex_init(&data->philos[i].instance_lock, NULL))
-		return (pthread_mutex_destroy(&data->philos[i].left_fork),
-			pthread_mutex_destroy(&data->philos[i].meal_lock),
-			pthread_mutex_destroy(&data->philos[i].dead_lock),
-			clean_for_init_philos(data, i + 1, DEAD_MUT_ERR));
+		return (clean_for_init_philos(data, i, DEAD_MUT_ERR, 2));
 	return (1);
 }
 
@@ -90,30 +85,64 @@ int	init_threads(t_data *data)
 	int	i;
 
 	i = 0;
+	data->start_time = current_time();
 	pthread_mutex_lock(&data->instance_lock);
 	while (i < data->philos_count)
 	{
 		if (pthread_create(&data->philos[i].thread, NULL, philo_loop,
 				&data->philos[i]))
-			return (clean_init(data, i), 1);
+			return (data->finished = 1,
+				pthread_mutex_unlock(&data->instance_lock), clean_init(data, i),
+				1);
 		i++;
 	}
-	data->start_time = current_time();
 	pthread_mutex_unlock(&data->instance_lock);
 	if (pthread_create(&data->monitor, NULL, monitor_loop, data))
-		return (clean_init(data, i + 1), 1);
+		return (data->finished = 1, clean_init(data, i), 1);
 	return (0);
 }
 
-static int	clean_for_init_philos(t_data *data, int init_one, int flag)
+static void	clean_mutex_for_philo(int flag, t_data *data, int i)
+{
+	if (flag == 0)
+		pthread_mutex_destroy(&data->philos[i].left_fork);
+	else if (flag == 1)
+	{
+		pthread_mutex_destroy(&data->philos[i].left_fork);
+		pthread_mutex_destroy(&data->philos[i].meal_lock);
+	}
+	else if (flag == 2)
+	{
+		pthread_mutex_destroy(&data->philos[i].left_fork);
+		pthread_mutex_destroy(&data->philos[i].meal_lock);
+		pthread_mutex_destroy(&data->philos[i].dead_lock);
+	}
+	else if (flag == 3)
+	{
+		pthread_mutex_destroy(&data->philos[i].left_fork);
+		pthread_mutex_destroy(&data->philos[i].meal_lock);
+		pthread_mutex_destroy(&data->philos[i].dead_lock);
+		pthread_mutex_destroy(&data->philos[i].instance_lock);
+	}
+}
+
+static int	clean_for_init_philos(t_data *data, int init_one, int flag,
+		int flag_for_clean)
 {
 	int	i;
 
 	i = 0;
+	if (init_one == 1)
+	{
+		clean_mutex_for_philo(flag_for_clean, data, i);
+		return (free_and_print(flag, data));
+	}
 	while (i != init_one)
 	{
-		pthread_mutex_destroy(&data->philos[i].left_fork);
-		pthread_mutex_destroy(&data->philos[i].meal_lock);
+		if (i != init_one - 1)
+			clean_mutex_for_philo(3, data, i);
+		else
+			clean_mutex_for_philo(flag_for_clean, data, i);
 		i++;
 	}
 	free(data->philos);

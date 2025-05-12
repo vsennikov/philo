@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 19:00:49 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 14:32:26 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/12 17:19:47 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ static int	init_everything(t_data *data, int argc, char **argv)
 	if (!init_data(data, argc, argv))
 		return (free(data), 0);
 	if (!init_philos(data))
-		return (free(data), 0);
+		return (pthread_mutex_destroy(&data->print_lock),
+			pthread_mutex_destroy(&data->finished_lock),
+			pthread_mutex_destroy(&data->instance_lock), free(data), 0);
 	if (init_threads(data))
 		return (0);
 	return (1);

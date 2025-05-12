@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:57:44 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/09 17:51:31 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/12 13:57:29 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,28 +32,10 @@ int	philo_died(t_philo *philo)
 			pthread_mutex_unlock(&philo->instance_lock), 1);
 	if (philo->last_eaten && current_time()
 		- philo->last_eaten >= philo->time_to_die)
-	{
-		pthread_mutex_unlock(&philo->instance_lock);
-		pthread_mutex_lock(&philo->data->print_lock);
-		pthread_mutex_lock(&philo->data->instance_lock);
-		philo->is_dead = 1;
-		if (check_finished(philo))
-			return (pthread_mutex_unlock(&philo->data->print_lock),
-				pthread_mutex_unlock(&philo->data->instance_lock),
-				pthread_mutex_unlock(&philo->dead_lock), 0);
-		pthread_mutex_lock(&philo->data->finished_lock);
-		printf("%lld %d %s\n", current_time() - philo->data->start_time,
-			philo->id + 1, "died");
-		philo->data->finished = 1;
-		pthread_mutex_unlock(&philo->data->instance_lock);
-		pthread_mutex_unlock(&philo->data->finished_lock);
-		pthread_mutex_unlock(&philo->dead_lock);
-		pthread_mutex_unlock(&philo->data->print_lock);
-		return (1);
-	}
+		return (print_dead(philo));
 	pthread_mutex_unlock(&philo->dead_lock);
 	pthread_mutex_unlock(&philo->instance_lock);
-	return (pthread_mutex_unlock(&philo->dead_lock), pthread_mutex_unlock(&philo->instance_lock), 0);
+	return (0);
 }
 
 int	print_state(t_data *data, int philo_id, char *action)

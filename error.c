@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:53:53 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 14:52:46 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/12 15:09:03 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ void	clean_init(t_data *data, int t_created)
 		pthread_join(data->philos[i].thread, NULL);
 		i++;
 	}
-	if (i == data->philos_count)
-		pthread_join(data->monitor, NULL);
 	i = 0;
 	while (i != data->philos_count)
 	{
@@ -59,7 +57,6 @@ void	clean_init(t_data *data, int t_created)
 		pthread_mutex_destroy(&data->philos[i].instance_lock);
 		i++;
 	}
-	i = 0;
 	free(data->philos);
 	pthread_mutex_destroy(&data->print_lock);
 	pthread_mutex_destroy(&data->finished_lock);
