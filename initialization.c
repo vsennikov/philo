@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:21:01 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 17:21:51 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:32:58 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,11 @@ int	init_threads(t_data *data)
 				1);
 		i++;
 	}
-	pthread_mutex_unlock(&data->instance_lock);
 	if (pthread_create(&data->monitor, NULL, monitor_loop, data))
-		return (data->finished = 1, clean_init(data, i), 1);
+		return (pthread_mutex_unlock(&data->instance_lock),
+			pthread_mutex_lock(&data->finished_lock), data->finished = 1,
+			pthread_mutex_unlock(&data->finished_lock), clean_init(data, i), 1);
+	pthread_mutex_unlock(&data->instance_lock);
 	return (0);
 }
 
