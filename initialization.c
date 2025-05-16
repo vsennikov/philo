@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:21:01 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/14 11:32:58 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:54:26 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	init_philo_mutexs(t_data *data, int i)
 	if (pthread_mutex_init(&data->philos[i].dead_lock, NULL))
 		return (clean_for_init_philos(data, i, DEAD_MUT_ERR, 1));
 	if (pthread_mutex_init(&data->philos[i].instance_lock, NULL))
-		return (clean_for_init_philos(data, i, DEAD_MUT_ERR, 2));
+		return (clean_for_init_philos(data, i, I_LOCK, 2));
 	return (1);
 }
 
@@ -58,7 +58,6 @@ int	init_threads(t_data *data)
 	int	i;
 
 	i = 0;
-	data->start_time = current_time();
 	pthread_mutex_lock(&data->instance_lock);
 	while (i < data->philos_count)
 	{
@@ -69,6 +68,7 @@ int	init_threads(t_data *data)
 				1);
 		i++;
 	}
+	data->start_time = current_time();
 	if (pthread_create(&data->monitor, NULL, monitor_loop, data))
 		return (pthread_mutex_unlock(&data->instance_lock),
 			pthread_mutex_lock(&data->finished_lock), data->finished = 1,

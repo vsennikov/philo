@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 # CFLAGS = -Wall -Wextra -Werror -g -fsanitize=thread
 
 SRCS = main.c philo_utils_1.c philo_utils_2.c error.c initialization.c monitor_job.c\
@@ -12,10 +12,10 @@ NAME = philo
 all: $(NAME) 
 
 $(NAME): $(OBJ) 
-	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 %.o: %.c philo.h Makefile
-	@$(CC) $(CFLAGS)  -c $< -o $@
+	$(CC) $(CFLAGS)  -c $< -o $@
 
 clean:
 	@rm -f $(OBJ)

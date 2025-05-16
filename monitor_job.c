@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:19:08 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 13:57:24 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:53:21 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	*monitor_loop(void *arg)
 				return (NULL);
 			i++;
 		}
-		custom_usleep(1000);
+		custom_usleep(100);
 	}
 	return (NULL);
 }

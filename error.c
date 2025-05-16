@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:53:53 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 15:09:03 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 10:47:40 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	free_and_print(int flag, t_data *data)
 		return (ft_putstr_fd(FORK_MUTEXS, 2), 0);
 	else if (flag == MEAL_ERR)
 		return (ft_putstr_fd(MEAL_MUTEX, 2), 0);
+	else if (flag == I_LOCK)
+		return (ft_putstr_fd(I_MUTEXS, 2), 0);
 	return (1);
 }
 
