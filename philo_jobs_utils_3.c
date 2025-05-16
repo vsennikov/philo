@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 12:14:43 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 13:57:31 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:38:05 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	single_case(t_philo *philo, int id)
 	pthread_mutex_unlock(&philo->instance_lock);
 	pthread_mutex_lock(&philo->left_fork);
 	print_state(philo->data, id + 1, "has taken a fork");
-	custom_usleep(philo->data->time_to_die * 1000);
+	custom_usleep(philo->data->time_to_die * 1000, philo->data);
 	pthread_mutex_unlock(&philo->left_fork);
 	pthread_mutex_lock(&philo->dead_lock);
 	philo->is_dead = 1;

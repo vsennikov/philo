@@ -1,6 +1,6 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
-# CFLAGS = -Wall -Wextra -Werror -g -fsanitize=thread
+# CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=thread
 
 SRCS = main.c philo_utils_1.c philo_utils_2.c error.c initialization.c monitor_job.c\
  philo_jobs.c philo_jobs_utils_1.c philo_jobs_utils_2.c philo_jobs_utils_3.c philo_jobs_utils_4.c

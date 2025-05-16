@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 12:20:11 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 14:13:38 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:38:15 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,12 @@ void	calculate_and_think(t_philo *philo, int id)
 	{
 		if (philo->time_to_eat > philo->time_to_sleep)
 			delay = (philo->time_to_eat - philo->time_to_sleep) * 1000;
-		custom_usleep(delay + 10000);
+		custom_usleep(delay + 10000, philo->data);
 	}
 	else if (philo->philos_count % 2 != 0)
 	{
 		if (philo->time_to_eat > philo->time_to_sleep)
 			delay = (philo->time_to_eat - philo->time_to_sleep) * 1000;
-		custom_usleep(delay + 1000);
+		custom_usleep(delay + 1000, philo->data);
 	}
 }

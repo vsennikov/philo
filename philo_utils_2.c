@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 12:49:42 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/07 12:00:18 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:40:13 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,22 @@ void	clean_everything(t_data *data)
 	free(data);
 }
 
-void	custom_usleep(long long sleep)
+void	custom_usleep(long long sleep, t_data *data)
 {
 	long long	start_time;
 
 	start_time = current_time();
 	while ((current_time() - start_time) * 1000 < sleep)
+	{
+		pthread_mutex_lock(&data->finished_lock);
+		if (data->finished)
+		{
+			pthread_mutex_unlock(&data->finished_lock);
+			return ;
+		}
+		pthread_mutex_unlock(&data->finished_lock);
 		usleep(500);
+	}
 }
 
 static int	ft_isspace(char ch)

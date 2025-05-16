@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:18:12 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 13:57:37 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:40:54 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	*philo_loop(void *arg)
 	set_start_time(philo);
 	if (!philo->id && philo->philos_count != 1 && philo->philos_count != 3
 		&& philo->philos_count % 2 != 0)
-		custom_usleep(philo->time_to_eat * 1000);
+		custom_usleep(philo->time_to_eat * 1000, philo->data);
 	if ((philo->id + 1) % 2 != 0)
-		custom_usleep(philo->time_to_eat / 2 * 1000);
+		custom_usleep(philo->time_to_eat / 2 * 1000, philo->data);
 	while (1)
 	{
 		if (check_finished(philo))
@@ -76,7 +76,7 @@ static int	p_sleep(t_philo *philo)
 	if (check_finished(philo))
 		return (0);
 	print_state(philo->data, philo->id + 1, "is sleeping");
-	usleep(philo->time_to_sleep * 1000);
+	custom_usleep(philo->time_to_sleep * 1000, philo->data);
 	return (1);
 }
 

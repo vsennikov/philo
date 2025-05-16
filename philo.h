@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 19:00:52 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 17:22:21 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:37:37 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int						free_and_print(int flag, t_data *data);
 void					ft_putstr_fd(char *s, int fd);
 void					*ft_calloc(size_t nmemb, size_t size);
 long long				current_time(void);
-void					custom_usleep(long long sleep);
+void					custom_usleep(long long sleep, t_data *data);
 void					clean_everything(t_data *data);
 void					clean_init(t_data *data, int t_created);
 

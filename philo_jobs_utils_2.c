@@ -6,7 +6,7 @@
 /*   By: vsenniko <vsenniko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:57:44 by vsenniko          #+#    #+#             */
-/*   Updated: 2025/05/12 13:57:29 by vsenniko         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:37:59 by vsenniko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	check_during_eat(t_philo *philo)
 		leave_forks(philo);
 		return (0);
 	}
-	custom_usleep(philo->time_to_eat * 1000);
+	custom_usleep(philo->time_to_eat * 1000, philo->data);
 	return (1);
 }
 
